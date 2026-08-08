@@ -13,9 +13,17 @@ def get_available_formats(url):
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
+        # 👇 ADD THESE 3 LINES 👇
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["mweb"],  # Use mobile web client (less blocked)
+            }
+        },
+        "sleep_requests": 2,  # Slow down requests
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
+        # ... rest stays same
         video_formats = []
         audio_formats = []
 
@@ -110,6 +118,12 @@ def download():
             "quiet": False,
             "no_warnings": False,
             "outtmpl": os.path.join(temp_dir, "%(title)s.%(ext)s"),
+            "extractor_args": {
+                "youtube": {
+                    "player_client": ["mweb"],
+                }
+            },
+            "sleep_requests": 2,
         }
 
         if media_type == "audio":
