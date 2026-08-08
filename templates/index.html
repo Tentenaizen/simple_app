@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YT Video + MP3 Downloader</title>
+    <style>
+        body { max-width: 800px; margin: 2rem auto; padding: 0 1rem; font-family: sans-serif; }
+        .form-group { margin: 1rem 0; }
+        input[type="text"] { width: 100%; padding: 0.5rem; font-size: 1rem; }
+        button { padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .error { color: #dc2626; padding: 0.5rem; background: #fee2e2; border-radius: 4px; }
+        .format-item { padding: 0.5rem; border-bottom: 1px solid #e5e7eb; display: flex; gap: 1rem; align-items: center; }
+        .section-title { margin-top: 1.5rem; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <h1>YouTube Downloader</h1>
+
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+    <!-- Step 1: Enter URL -->
+    <form method="POST" action="/fetch" class="form-group">
+        <input type="text" name="url" placeholder="Paste YouTube video URL here" value="{{ url or '' }}">
+        <br><br>
+        <button type="submit">Show Available Qualities</button>
+    </form>
+
+    <!-- Step 2: Choose format -->
+    {% if video_formats or audio_formats %}
+    <h3>{{ title }}</h3>
+
+    <!-- VIDEO OPTIONS -->
+    {% if video_formats %}
+    <h4 class="section-title">🎬 Video Qualities</h4>
+    <form method="POST" action="/download">
+        <input type="hidden" name="url" value="{{ url }}">
+        <input type="hidden" name="media_type" value="video">
+        {% for f in video_formats %}
+        <label class="format-item">
+            <input type="radio" name="format_id" value="{{ f.format_id }}" {% if loop.first %}checked{% endif %}>
+            <strong>{{ f.label }}</strong> ({{ f.ext }}) · {{ f.note }} · {{ f.size_mb }} MB · {{ f.fps }}fps
+        </label>
+        {% endfor %}
+        <br>
+        <button type="submit">Download MP4 Video</button>
+    </form>
+    {% endif %}
+
+    <!-- AUDIO OPTIONS -->
+    {% if audio_formats %}
+    <h4 class="section-title">🎵 Audio Only (MP3)</h4>
+    <form method="POST" action="/download">
+        <input type="hidden" name="url" value="{{ url }}">
+        <input type="hidden" name="media_type" value="audio">
+        {% for f in audio_formats %}
+        <label class="format-item">
+            <input type="radio" name="format_id" value="{{ f.format_id }}" {% if loop.first %}checked{% endif %}>
+            <strong>{{ f.label }}</strong> · MP3 · {{ f.size_mb }} MB
+        </label>
+        {% endfor %}
+        <br>
+        <button type="submit">Download MP3 Audio</button>
+    </form>
+    {% endif %}
+    {% endif %}
+</body>
+</html>
