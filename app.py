@@ -100,7 +100,8 @@ def download():
         return render_template("index.html", error="Missing URL or quality selection")
     
     # ✅ FFmpeg path for Render (auto-installed via build.sh)
-    ffmpeg_path = os.path.join(os.path.dirname(__file__), "ffmpeg", "bin", "ffmpeg")
+# Replace this line in your download() function:
+    ffmpeg_path = os.path.join(os.path.dirname(__file__), "ffmpeg", "ffmpeg")
     
     temp_dir = tempfile.mkdtemp()
     try:
